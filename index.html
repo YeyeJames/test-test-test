@@ -107,6 +107,7 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            min-height: 500px; /* 增加最小高度 */
         }
 
         /* 選擇題庫區 */
@@ -143,24 +144,45 @@
         .game-area { display: none; }
         .game-area.active { display: block; }
 
+        /* 返回按鈕 */
+        .btn-back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: transparent;
+            border: none;
+            color: #888;
+            font-size: 1em;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 10;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-back:hover { color: var(--primary-color); }
+
         .progress-hud {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            margin-top: 30px; /* 為返回按鈕留空間 */
             font-size: 0.9em;
             color: #666;
         }
 
         .timer { font-size: 1.5em; font-weight: bold; color: var(--primary-color); margin: 10px 0; }
 
-        /* 單字學習卡 */
+        /* 單字學習卡 (移到底部樣式調整) */
         .word-info-card {
             background: rgba(0,0,0,0.03);
             border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 20px;
+            padding: 20px;
+            margin-top: 30px; /* 與上方區隔 */
             text-align: left;
-            border-left: 5px solid var(--primary-color);
+            border-top: 5px solid var(--primary-color); /* 改為上方邊框 */
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         }
         .word-pos { color: #888; font-style: italic; font-size: 0.9em; margin-bottom: 5px; }
         .word-meaning { font-size: 1.3em; font-weight: bold; color: var(--text-color); margin-bottom: 8px; }
@@ -186,7 +208,7 @@
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin: 20px 0;
+            margin: 10px 0 20px 0;
             flex-wrap: wrap;
         }
 
@@ -208,7 +230,54 @@
         .btn-audio:active { transform: scale(0.95); }
         .btn-audio.secondary { background: #a8edea; color: #333; width: 45px; height: 45px; font-size: 18px; }
         .btn-audio.text-btn { width: auto; height: 40px; padding: 0 15px; border-radius: 20px; font-size: 14px; background: #667eea; }
-        .btn-audio.recording { background: #ff4b4b; animation: pulse 1.5s infinite; }
+        
+        /* 美化後的錄音介面 */
+        .recording-container {
+            background: #f8f9fa;
+            border-radius: 50px;
+            padding: 8px 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            margin: 0 0 20px 0;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+
+        .rec-status {
+            font-size: 0.9em;
+            color: #666;
+            min-width: 70px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .rec-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-rec, .btn-play {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-rec { background: white; color: #ff6b6b; border: 1px solid #ff6b6b; }
+        .btn-rec:hover { background: #ff6b6b; color: white; }
+        .btn-rec.recording { background: #ff4b4b; color: white; animation: pulse 1.5s infinite; border-color: #ff4b4b; }
+
+        .btn-play { background: white; color: #43e97b; border: 1px solid #43e97b; }
+        .btn-play:hover { background: #43e97b; color: white; }
+        .btn-play:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); border-color: #ccc; color: #ccc;}
 
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 75, 75, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 75, 75, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 75, 75, 0); } }
 
@@ -347,6 +416,9 @@
 
         <!-- 遊戲主體 -->
         <div id="gameArea" class="game-area">
+            <!-- 新增：返回按鈕 -->
+            <button class="btn-back" onclick="quitGame()">⬅ 返回列表</button>
+            
             <div class="combo-text" id="comboDisplay">COMBO x2!</div>
             
             <div class="progress-hud">
@@ -356,14 +428,6 @@
             </div>
 
             <div class="timer" id="timerDisplay">00:00</div>
-
-            <!-- 單字學習卡 -->
-            <div class="word-info-card">
-                <div class="word-pos" id="displayPos"></div>
-                <div class="word-meaning" id="displayMeaning"></div>
-                <div class="word-definition" id="displayDef"></div>
-                <div class="word-sentence" id="displaySentence"></div>
-            </div>
 
             <div class="audio-controls">
                 <button class="btn-audio" onclick="playCurrentWord(0)" title="標準發音">🔊</button>
@@ -377,10 +441,13 @@
                 </div>
             </div>
 
-            <div style="margin-bottom: 10px;">
-                <button class="btn-audio secondary" id="recordBtn" onclick="toggleRecording()" style="background:#ff6b6b; color:white;">🎤</button>
-                <button class="btn-audio secondary" id="playRecordBtn" onclick="playUserRecording()" style="background:#43e97b; color:white; display:none;">▶️</button>
-                <div style="font-size:0.8em; color:#888; margin-top:5px;">錄音/播放</div>
+            <!-- 美化後的錄音介面 -->
+            <div class="recording-container">
+                <div class="rec-status" id="recStatus">錄音練習</div>
+                <div class="rec-controls">
+                    <button class="btn-rec" id="recordBtn" onclick="toggleRecording()" title="開始/停止錄音">🎤</button>
+                    <button class="btn-play" id="playRecordBtn" onclick="playUserRecording()" disabled title="播放錄音">▶️</button>
+                </div>
             </div>
 
             <input type="text" id="answerInput" class="input-box" placeholder="輸入單字..." autocomplete="off">
@@ -388,6 +455,14 @@
             <div id="feedback" style="height: 20px; color: red; font-weight: bold; margin-bottom: 10px;"></div>
 
             <button class="btn" onclick="checkAnswer()">送出答案 (Enter)</button>
+
+            <!-- 變更位置：單字學習卡移到底部 -->
+            <div class="word-info-card">
+                <div class="word-pos" id="displayPos"></div>
+                <div class="word-meaning" id="displayMeaning"></div>
+                <div class="word-definition" id="displayDef"></div>
+                <div class="word-sentence" id="displaySentence"></div>
+            </div>
         </div>
 
         <!-- 結算畫面 -->
@@ -430,7 +505,7 @@
     const wordBanks = {
         part1: {
             title: "Part 1",
-            desc: "單字 1-25 (A-C)",
+            desc: "單字 1-25",
             data: [
                 { word: "accompany", pos: "(v.)", meaning: "陪伴；伴隨", enDef: "To go somewhere with someone.", sentence: "I will accompany my grandmother to the doctor tomorrow.", cnSentence: "我明天會陪祖母去看醫生。" },
                 { word: "alder", pos: "(n.)", meaning: "榿木", enDef: "A type of tree that often grows near water.", sentence: "The bird built a small nest in the tall alder tree.", cnSentence: "那隻鳥在那棵高大的榿木上築了一個小巢。" },
@@ -461,7 +536,7 @@
         },
         part2: {
             title: "Part 2",
-            desc: "單字 26-50 (C-H)",
+            desc: "單字 26-50",
             data: [
                 { word: "courtroom", pos: "(n.)", meaning: "法庭", enDef: "A room where legal cases are judged.", sentence: "Everyone stood up when the judge entered the courtroom.", cnSentence: "當法官進入法庭時，每個人都站了起來。" },
                 { word: "current", pos: "(adj.)", meaning: "目前的", enDef: "Happening or existing now.", sentence: "The current situation is difficult, but we will solve it.", cnSentence: "目前的情況很困難，但我們會解決它的。" },
@@ -492,7 +567,7 @@
         },
         part3: {
             title: "Part 3",
-            desc: "單字 51-75 (H-P)",
+            desc: "單字 51-75",
             data: [
                 { word: "herald", pos: "(v.)", meaning: "預示", enDef: "To be a sign that something is going to happen.", sentence: "The arrival of the cuckoo bird often heralds the start of spring.", cnSentence: "杜鵑鳥的到來通常預示著春天的開始。" },
                 { word: "hockey", pos: "(n.)", meaning: "曲棍球", enDef: "A sport played on ice or a field with sticks and a puck/ball.", sentence: "Ice hockey is a very popular sport in Canada.", cnSentence: "冰上曲棍球在加拿大是非常受歡迎的運動。" },
@@ -523,7 +598,7 @@
         },
         part4: {
             title: "Part 4",
-            desc: "單字 76-100 (P-W)",
+            desc: "單字 76-100",
             data: [
                 { word: "pleasant", pos: "(adj.)", meaning: "令人愉快的", enDef: "Nice, enjoyable, or friendly.", sentence: "We had a pleasant walk in the park this morning.", cnSentence: "我們今天早上在公園裡愉快地散步。" },
                 { word: "polar", pos: "(adj.)", meaning: "極地的", enDef: "Related to the North or South Pole.", sentence: "Polar bears have thick fur to keep them warm in the cold.", cnSentence: "北極熊有厚厚的毛皮讓牠們在寒冷中保暖。" },
@@ -675,6 +750,16 @@
 
         loadWord();
     }
+    
+    // 新增：退出練習
+    function quitGame() {
+        if(confirm("確定要結束目前的練習並返回列表嗎？")) {
+            clearInterval(state.timerInterval);
+            stopRecording(); // 停止錄音
+            document.getElementById('gameArea').classList.remove('active');
+            document.getElementById('setupScreen').style.display = 'block';
+        }
+    }
 
     function updateTimer() {
         const diff = Math.floor((Date.now() - state.startTime) / 1000);
@@ -690,13 +775,11 @@
         
         // 更新單字學習卡資訊
         document.getElementById('displayPos').innerText = currentObj.pos;
-        document.getElementById('displayMeaning').innerText = currentObj.meaning;
-        document.getElementById('displayDef').innerText = currentObj.enDef;
         
-        // 處理例句
-        const regex = new RegExp(`(${currentObj.word})`, 'gi');
-        const highlightedSentence = currentObj.sentence.replace(regex, '<em>$1</em>');
-        document.getElementById('displaySentence').innerHTML = `${highlightedSentence}<br><small style="color:#888">${currentObj.cnSentence}</small>`;
+        // 修改處：先隱藏中文解釋與例句，顯示佔位符
+        document.getElementById('displayMeaning').innerHTML = '<span style="color:#ccc; font-size:0.9em; font-style:italic;">(作答後顯示中文)</span>';
+        document.getElementById('displayDef').innerText = currentObj.enDef;
+        document.getElementById('displaySentence').innerHTML = '<span style="color:#ccc; font-size:0.9em; font-style:italic;">(作答後顯示例句)</span>';
 
         // 輸入框重置
         const input = document.getElementById('answerInput');
@@ -705,14 +788,29 @@
         input.className = 'input-box';
         document.getElementById('feedback').innerText = '';
         
-        // 錄音狀態
-        document.getElementById('playRecordBtn').style.display = 'none';
+        // 重置錄音狀態
+        document.getElementById('recStatus').innerText = "錄音練習";
+        document.getElementById('playRecordBtn').disabled = true;
         if (state.userRecordings[currentObj.word]) {
-             document.getElementById('playRecordBtn').style.display = 'inline-block';
+             document.getElementById('playRecordBtn').disabled = false;
+             document.getElementById('recStatus').innerText = "已有錄音";
         }
 
         // 自動播放單字
         playCurrentWord(0);
+    }
+
+    // 新增：顯示隱藏資訊的函式
+    function revealInfo() {
+        const currentObj = state.currentWords[state.currentIndex];
+        
+        // 顯示中文解釋
+        document.getElementById('displayMeaning').innerText = currentObj.meaning;
+        
+        // 顯示並處理例句
+        const regex = new RegExp(`(${currentObj.word})`, 'gi');
+        const highlightedSentence = currentObj.sentence.replace(regex, '<em>$1</em>');
+        document.getElementById('displaySentence').innerHTML = `${highlightedSentence}<br><small style="color:#888">${currentObj.cnSentence}</small>`;
     }
 
     function checkAnswer() {
@@ -721,6 +819,9 @@
         const currentObj = state.currentWords[state.currentIndex];
         const correctAns = currentObj.word.toLowerCase();
         const feedback = document.getElementById('feedback');
+
+        // 無論對錯，先揭曉答案資訊
+        revealInfo();
 
         if (userAns === correctAns) {
             // 答對
@@ -745,7 +846,8 @@
                 setTimeout(() => comboEl.classList.remove('show'), 1000);
             }
 
-            setTimeout(nextWord, 1000);
+            // 延長到 2000ms 讓學生有時間看例句
+            setTimeout(nextWord, 2000);
         } else {
             // 答錯
             playSound('wrong');
@@ -763,7 +865,8 @@
             }
 
             setTimeout(() => input.classList.remove('wrong'), 500);
-            setTimeout(nextWord, 2500); // 答錯停留久一點
+            // 延長到 3500ms 讓學生有更多時間複習
+            setTimeout(nextWord, 3500); 
         }
     }
 
@@ -880,12 +983,13 @@
                 const currentWord = state.currentWords[state.currentIndex].word;
                 
                 state.userRecordings[currentWord] = audioUrl;
-                document.getElementById('playRecordBtn').style.display = 'inline-block';
+                document.getElementById('playRecordBtn').disabled = false; // 啟用播放
             };
 
             state.mediaRecorder.start();
             state.isRecording = true;
             document.getElementById('recordBtn').classList.add('recording');
+            document.getElementById('recStatus').innerText = "錄音中...";
         } catch (err) {
             console.error("錄音錯誤:", err);
             alert("無法存取麥克風");
@@ -893,10 +997,11 @@
     }
 
     function stopRecording() {
-        if (state.mediaRecorder) {
+        if (state.mediaRecorder && state.isRecording) {
             state.mediaRecorder.stop();
             state.isRecording = false;
             document.getElementById('recordBtn').classList.remove('recording');
+            document.getElementById('recStatus').innerText = "錄音完成";
         }
     }
 
