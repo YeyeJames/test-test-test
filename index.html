@@ -2,7 +2,16 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 加入 viewport-fit=cover 以適應全面屏 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- iOS Web App 設定 (加入主畫面後變為全螢幕 App) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="拼字學堂">
+    <!-- Android Web App 設定 -->
+    <meta name="mobile-web-app-capable" content="yes">
+
     <title>進階拼字學堂 - Part 1-4 單字練習</title>
     <!-- 引入圓潤的英文字型 Nunito -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
@@ -38,6 +47,9 @@
             transition: all 0.5s ease;
             font-size: 18px; /* 基礎字級加大 */
             letter-spacing: 0.5px;
+            /* 針對 iOS 安全區域的調整 */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         /* --- 頂部導航列 --- */
