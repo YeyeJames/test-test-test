@@ -26,9 +26,8 @@
             margin: 0;
             padding: 0;
             color: var(--text-color);
-            /* 關鍵修改：設定為視窗高度，禁止整頁捲動 */
             height: 100vh;
-            height: 100dvh; /* 支援移動端動態高度 */
+            height: 100dvh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -38,14 +37,14 @@
         /* --- 頂部導航列 --- */
         header {
             background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            padding: 10px 15px; /* 縮小 padding 以節省空間 */
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             color: white;
             border-radius: 0 0 15px 15px;
-            flex-shrink: 0; /* 防止被壓縮 */
+            flex-shrink: 0;
             z-index: 100;
         }
 
@@ -65,6 +64,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+        
+        #username {
+            cursor: pointer;
+            border-bottom: 1px dashed rgba(255,255,255,0.5);
+        }
+        #username:hover {
+            opacity: 0.8;
         }
 
         .stats-bar {
@@ -95,22 +102,22 @@
 
         /* --- 主畫面 --- */
         main {
-            flex: 1; /* 自動填滿剩餘高度 */
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 10px; /* 縮小邊距 */
+            padding: 10px;
             width: 100%;
             max-width: 1000px;
             margin: 0 auto;
-            overflow: hidden; /* 防止溢出 */
+            overflow: hidden;
             box-sizing: border-box;
         }
 
         .game-card {
             background: var(--card-bg);
             width: 100%;
-            height: 100%; /* 填滿 main */
+            height: 100%;
             border-radius: 20px;
             padding: 15px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
@@ -118,11 +125,11 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            overflow-y: auto; /* 允許卡片內部內容滾動 */
+            overflow-y: auto;
             box-sizing: border-box;
         }
 
-        /* 選擇題庫區 - 調整為彈性佈局 */
+        /* 選擇題庫區 */
         #setupScreen {
             flex: 1;
             display: flex;
@@ -163,7 +170,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        /* 遊戲區 - Flex 垂直分佈 */
+        /* 遊戲區 */
         .game-area { 
             display: none; 
             height: 100%;
@@ -196,7 +203,7 @@
         .progress-hud {
             display: flex;
             justify-content: space-between;
-            margin-top: 30px; /* 為返回按鈕留空間 */
+            margin-top: 30px;
             margin-bottom: 5px;
             font-size: 0.85em;
             color: #666;
@@ -211,18 +218,18 @@
             flex-shrink: 0;
         }
 
-        /* 單字學習卡 (移到底部樣式調整) */
+        /* 單字學習卡 */
         .word-info-card {
             background: rgba(0,0,0,0.03);
             border-radius: 12px;
             padding: 10px;
-            margin-top: auto; /* 推到底部 */
+            margin-top: auto;
             text-align: left;
             border-top: 3px solid var(--primary-color);
             box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            flex-shrink: 1; /* 允許空間不足時縮小 */
-            overflow-y: auto; /* 內容過多時顯示捲軸 */
-            max-height: 30vh; /* 限制最大高度，避免蓋住上方 */
+            flex-shrink: 1;
+            overflow-y: auto;
+            max-height: 30vh;
             font-size: 0.9em;
         }
         .word-pos { color: #888; font-style: italic; font-size: 0.9em; margin-bottom: 2px; }
@@ -273,7 +280,6 @@
         .btn-audio.secondary { background: #a8edea; color: #333; width: 40px; height: 40px; font-size: 16px; }
         .btn-audio.text-btn { width: auto; height: 36px; padding: 0 12px; border-radius: 18px; font-size: 13px; background: #667eea; }
         
-        /* 美化後的錄音介面 */
         .recording-container {
             background: #f8f9fa;
             border-radius: 50px;
@@ -427,7 +433,6 @@
             align-self: center;
         }
 
-        /* 針對特小螢幕的手機調整 */
         @media (max-height: 600px) {
             header { padding: 5px 10px; }
             .game-card { padding: 10px; }
@@ -443,7 +448,7 @@
     <div class="user-info">
         <div class="avatar" id="currentAvatar">👦</div>
         <div>
-            <div id="username">小學員</div>
+            <div id="username" onclick="editName()" title="點擊修改暱稱">小學員</div>
             <div style="font-size: 0.8em; opacity: 0.8;">等級 <span id="level">1</span></div>
         </div>
     </div>
@@ -458,12 +463,9 @@
 
 <main>
     <div class="game-card">
-        <!-- 類別選擇 -->
         <div id="setupScreen">
             <h2>📚 請選擇練習範圍</h2>
-            <div class="category-select" id="categoryList">
-                <!-- 由 JS 生成: Part 1 - Part 4 -->
-            </div>
+            <div class="category-select" id="categoryList"></div>
             
             <div class="controls">
                 <label class="toggle-switch">
@@ -473,9 +475,7 @@
             <button class="btn" style="width: 100%; max-width: 300px; font-size: 1.2em; margin-top:20px;" onclick="startGame()">開始練習 ▶</button>
         </div>
 
-        <!-- 遊戲主體 -->
         <div id="gameArea" class="game-area">
-            <!-- 新增：返回按鈕 -->
             <button class="btn-back" onclick="quitGame()">⬅ 返回列表</button>
             
             <div class="combo-text" id="comboDisplay">COMBO x2!</div>
@@ -500,7 +500,6 @@
                 </div>
             </div>
 
-            <!-- 美化後的錄音介面 -->
             <div class="recording-container">
                 <div class="rec-status" id="recStatus">錄音練習</div>
                 <div class="rec-controls">
@@ -513,9 +512,9 @@
             
             <div id="feedback" style="height: 15px; color: red; font-weight: bold; margin-bottom: 5px; font-size: 0.9em; flex-shrink: 0;"></div>
 
-            <button class="btn" onclick="checkAnswer()">送出答案 (Enter)</button>
+            <button id="submitBtn" class="btn" onclick="checkAnswer()">送出答案 (Enter)</button>
+            <button id="nextBtn" class="btn" style="display:none; background:#43e97b;" onclick="nextWord()">下一題 ▶</button>
 
-            <!-- 變更位置：單字學習卡移到底部 -->
             <div class="word-info-card">
                 <div class="word-pos" id="displayPos"></div>
                 <div class="word-meaning" id="displayMeaning"></div>
@@ -524,7 +523,6 @@
             </div>
         </div>
 
-        <!-- 結算畫面 -->
         <div id="resultScreen" style="display:none; flex:1; flex-direction:column; justify-content:center;">
             <h2>🎉 練習完成！</h2>
             <p>本次得分: <span id="finalScore" style="font-size:2em; color:var(--primary-color);">0</span></p>
@@ -559,8 +557,76 @@
     </div>
 </div>
 
+<!-- 新增：通用訊息/確認彈窗 (取代 alert/confirm/prompt) -->
+<div id="msgModal" class="modal" style="z-index: 2000;">
+    <div class="modal-content" style="max-width: 350px;">
+        <h3 id="msgTitle">提示</h3>
+        <p id="msgContent" style="margin: 15px 0; font-size: 1.1em;"></p>
+        <input type="text" id="msgInput" class="input-box" style="display:none; font-size: 1.2em; margin: 10px auto;" placeholder="輸入內容...">
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+            <button id="msgCancelBtn" class="btn" style="background: #ccc; color: #333; display:none;">取消</button>
+            <button id="msgOkBtn" class="btn">確定</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    // --- 1. 資料庫 (100單字詳細資料 - 分類為 Part 1-4) ---
+    // --- 自製彈窗系統 (解決 CodeSandbox/Canvas 封鎖原生彈窗問題) ---
+    let msgCallback = null;
+
+    function closeMsgModal() {
+        document.getElementById('msgModal').classList.remove('active');
+        document.getElementById('msgInput').style.display = 'none';
+        document.getElementById('msgCancelBtn').style.display = 'none';
+        msgCallback = null;
+    }
+
+    // 替代 alert
+    function showAlert(msg) {
+        document.getElementById('msgTitle').innerText = "提示";
+        document.getElementById('msgContent').innerText = msg;
+        document.getElementById('msgOkBtn').onclick = closeMsgModal;
+        document.getElementById('msgModal').classList.add('active');
+    }
+
+    // 替代 confirm
+    function showConfirm(msg, onYes) {
+        document.getElementById('msgTitle').innerText = "確認";
+        document.getElementById('msgContent').innerText = msg;
+        document.getElementById('msgCancelBtn').style.display = 'inline-block';
+        
+        document.getElementById('msgCancelBtn').onclick = closeMsgModal;
+        document.getElementById('msgOkBtn').onclick = () => {
+            closeMsgModal();
+            if(onYes) onYes();
+        };
+        
+        document.getElementById('msgModal').classList.add('active');
+    }
+
+    // 替代 prompt
+    function showPrompt(msg, defaultVal, onYes) {
+        document.getElementById('msgTitle').innerText = "輸入";
+        document.getElementById('msgContent').innerText = msg;
+        
+        const input = document.getElementById('msgInput');
+        input.style.display = 'block';
+        input.value = defaultVal || '';
+        
+        document.getElementById('msgCancelBtn').style.display = 'inline-block';
+        document.getElementById('msgCancelBtn').onclick = closeMsgModal;
+        
+        document.getElementById('msgOkBtn').onclick = () => {
+            const val = input.value;
+            closeMsgModal();
+            if(onYes) onYes(val);
+        };
+        
+        document.getElementById('msgModal').classList.add('active');
+        input.focus();
+    }
+
+    // --- 資料庫 (100單字詳細資料 - 分類為 Part 1-4) ---
     const wordBanks = {
         part1: {
             title: "Part 1",
@@ -691,20 +757,20 @@
     // --- 2. 遊戲狀態 ---
     let state = {
         tokens: 0,
+        username: "小學員",
         unlockedItems: ['avatar_0', 'theme_default', 'sfx_default'],
         currentAvatar: '👦',
         currentTheme: 'theme_default',
         currentSfx: 'sfx_default',
         achievements: 0,
         
-        // 遊戲中狀態
-        currentWords: [], // 現在存放的是物件陣列
+        currentWords: [], 
         currentIndex: 0,
         correctCount: 0,
         wrongCount: 0,
         startTime: null,
         timerInterval: null,
-        wrongWords: [], // 存放答錯的物件，以便完整重練
+        wrongWords: [], 
         combo: 0,
         userRecordings: {}, 
         mediaRecorder: null,
@@ -721,11 +787,11 @@
     }
 
     function loadData() {
-        // 使用新的 key: spellingGameDataV3 以區隔舊資料
         const saved = localStorage.getItem('spellingGameDataV3');
         if (saved) {
             const parsed = JSON.parse(saved);
             state.tokens = parsed.tokens || 0;
+            state.username = parsed.username || "小學員";
             state.unlockedItems = parsed.unlockedItems || ['avatar_0', 'theme_default', 'sfx_default'];
             state.currentAvatar = parsed.currentAvatar || '👦';
             state.currentTheme = parsed.currentTheme || 'theme_default';
@@ -737,6 +803,7 @@
     function saveData() {
         localStorage.setItem('spellingGameDataV3', JSON.stringify({
             tokens: state.tokens,
+            username: state.username,
             unlockedItems: state.unlockedItems,
             currentAvatar: state.currentAvatar,
             currentTheme: state.currentTheme,
@@ -745,11 +812,24 @@
         updateUI();
     }
 
+    function editName() {
+        showPrompt("請輸入你的名字：", state.username, (newName) => {
+            if (newName && newName.trim() !== "") {
+                state.username = newName.trim();
+                saveData();
+            }
+        });
+    }
+
     function updateUI() {
         document.getElementById('tokens').innerText = state.tokens;
         document.getElementById('storeTokens').innerText = state.tokens;
         document.getElementById('currentAvatar').innerText = state.currentAvatar;
+        document.getElementById('username').innerText = state.username;
         document.getElementById('achievements').innerText = Math.floor(state.tokens / 100);
+        
+        const currentLevel = 1 + Math.floor(state.tokens / 50);
+        document.getElementById('level').innerText = currentLevel;
     }
 
     function renderCategories() {
@@ -758,7 +838,6 @@
         for (const [key, data] of Object.entries(wordBanks)) {
             const btn = document.createElement('button');
             btn.className = 'cat-btn';
-            // 顯示 Part 1-4
             btn.innerHTML = `${data.title}<span>${data.desc}</span>`;
             btn.onclick = () => selectCategory(btn, key);
             container.appendChild(btn);
@@ -772,22 +851,18 @@
         selectedCategory = key;
     }
 
-    // --- 4. 遊戲核心邏輯 ---
     function startGame(isRetry = false) {
         if (!selectedCategory && !isRetry) {
-            alert("請先選擇一個單元 (Part 1 - Part 4)！");
+            showAlert("請先選擇一個單元 (Part 1 - Part 4)！");
             return;
         }
 
-        // 初始化題目
         if (!isRetry) {
-            // 深拷貝資料，以免影響原題庫順序
             let words = JSON.parse(JSON.stringify(wordBanks[selectedCategory].data));
             const isRandom = document.getElementById('randomMode').checked;
             if (isRandom) words.sort(() => Math.random() - 0.5);
             state.currentWords = words;
         } else {
-            // 錯題重練模式
             state.currentWords = [...state.wrongWords];
         }
 
@@ -798,26 +873,23 @@
         state.combo = 0;
         state.userRecordings = {};
 
-        // UI 切換
         document.getElementById('setupScreen').style.display = 'none';
         document.getElementById('resultScreen').style.display = 'none';
         document.getElementById('gameArea').classList.add('active');
         
-        // 計時器
         state.startTime = Date.now();
         state.timerInterval = setInterval(updateTimer, 1000);
 
         loadWord();
     }
     
-    // 新增：退出練習
     function quitGame() {
-        if(confirm("確定要結束目前的練習並返回列表嗎？")) {
+        showConfirm("確定要結束目前的練習並返回列表嗎？", () => {
             clearInterval(state.timerInterval);
-            stopRecording(); // 停止錄音
+            stopRecording(); 
             document.getElementById('gameArea').classList.remove('active');
-            document.getElementById('setupScreen').style.display = 'flex'; // Change to flex to match setupScreen style
-        }
+            document.getElementById('setupScreen').style.display = 'flex'; 
+        });
     }
 
     function updateTimer() {
@@ -831,23 +903,17 @@
         const currentObj = state.currentWords[state.currentIndex];
         
         document.getElementById('wordsLeft').innerText = state.currentWords.length - state.currentIndex;
-        
-        // 更新單字學習卡資訊
         document.getElementById('displayPos').innerText = currentObj.pos;
-        
-        // 修改處：先隱藏中文解釋與例句，顯示佔位符
         document.getElementById('displayMeaning').innerHTML = '<span style="color:#ccc; font-size:0.9em; font-style:italic;">(作答後顯示中文)</span>';
         document.getElementById('displayDef').innerText = currentObj.enDef;
         document.getElementById('displaySentence').innerHTML = '<span style="color:#ccc; font-size:0.9em; font-style:italic;">(作答後顯示例句)</span>';
 
-        // 輸入框重置
         const input = document.getElementById('answerInput');
         input.value = '';
         input.focus();
         input.className = 'input-box';
         document.getElementById('feedback').innerText = '';
         
-        // 重置錄音狀態
         document.getElementById('recStatus').innerText = "錄音練習";
         document.getElementById('playRecordBtn').disabled = true;
         if (state.userRecordings[currentObj.word]) {
@@ -855,18 +921,15 @@
              document.getElementById('recStatus').innerText = "已有錄音";
         }
 
-        // 自動播放單字
+        document.getElementById('submitBtn').style.display = 'inline-block';
+        document.getElementById('nextBtn').style.display = 'none';
+
         playCurrentWord(0);
     }
 
-    // 新增：顯示隱藏資訊的函式
     function revealInfo() {
         const currentObj = state.currentWords[state.currentIndex];
-        
-        // 顯示中文解釋
         document.getElementById('displayMeaning').innerText = currentObj.meaning;
-        
-        // 顯示並處理例句
         const regex = new RegExp(`(${currentObj.word})`, 'gi');
         const highlightedSentence = currentObj.sentence.replace(regex, '<em>$1</em>');
         document.getElementById('displaySentence').innerHTML = `${highlightedSentence}<br><small style="color:#888">${currentObj.cnSentence}</small>`;
@@ -879,17 +942,14 @@
         const correctAns = currentObj.word.toLowerCase();
         const feedback = document.getElementById('feedback');
 
-        // 無論對錯，先揭曉答案資訊
         revealInfo();
 
         if (userAns === correctAns) {
-            // 答對
             playSound('correct');
             input.classList.add('correct');
             state.correctCount++;
             document.getElementById('scoreCorrect').innerText = state.correctCount;
             
-            // 分數與 Combo
             state.combo++;
             let earned = 10 + (state.combo * 2);
             state.tokens += earned;
@@ -904,11 +964,7 @@
                 comboEl.classList.add('show');
                 setTimeout(() => comboEl.classList.remove('show'), 1000);
             }
-
-            // 延長到 2000ms 讓學生有時間看例句
-            setTimeout(nextWord, 2000);
         } else {
-            // 答錯
             playSound('wrong');
             input.classList.add('wrong');
             state.wrongCount++;
@@ -918,15 +974,16 @@
             feedback.innerText = `Answer: ${correctAns}`;
             feedback.style.color = "red";
             
-            // 加入錯題庫 (加入整個物件)
             if (!state.wrongWords.some(w => w.word === currentObj.word)) {
                 state.wrongWords.push(currentObj);
             }
 
             setTimeout(() => input.classList.remove('wrong'), 500);
-            // 延長到 3500ms 讓學生有更多時間複習
-            setTimeout(nextWord, 3500); 
         }
+
+        document.getElementById('submitBtn').style.display = 'none';
+        document.getElementById('nextBtn').style.display = 'inline-block';
+        document.getElementById('nextBtn').focus();
     }
 
     function nextWord() {
@@ -941,7 +998,7 @@
     function endGame() {
         clearInterval(state.timerInterval);
         document.getElementById('gameArea').classList.remove('active');
-        document.getElementById('resultScreen').style.display = 'flex'; // changed to flex to center content
+        document.getElementById('resultScreen').style.display = 'flex'; 
         
         const diff = Math.floor((Date.now() - state.startTime) / 1000);
         const m = Math.floor(diff / 60).toString().padStart(2, '0');
@@ -976,7 +1033,6 @@
         }
     });
 
-    // --- 5. 語音合成 (TTS) ---
     function playCurrentWord(type) {
         const text = state.currentWords[state.currentIndex].word;
         speakText(text, type);
@@ -985,7 +1041,7 @@
 
     function playSentence() {
         const sentence = state.currentWords[state.currentIndex].sentence;
-        speakText(sentence, 0); // 用標準音讀例句
+        speakText(sentence, 0); 
     }
 
     function speakText(text, type) {
@@ -994,16 +1050,16 @@
         utterance.lang = 'en-US';
 
         switch(type) {
-            case 0: // 標準
+            case 0: 
                 utterance.rate = 1; utterance.pitch = 1;
                 break;
-            case 1: // 機器人
+            case 1: 
                 utterance.rate = 0.7; utterance.pitch = 0.5;
                 break;
-            case 2: // 松鼠
+            case 2: 
                 utterance.rate = 1.3; utterance.pitch = 1.5;
                 break;
-            case 3: // 獅子
+            case 3: 
                 utterance.rate = 0.8; utterance.pitch = 0.2;
                 break;
         }
@@ -1012,7 +1068,6 @@
         synth.speak(utterance);
     }
 
-    // --- 6. 錄音功能 ---
     function toggleRecording() {
         if (state.isRecording) {
             stopRecording();
@@ -1023,26 +1078,39 @@
 
     async function startRecording() {
         if (!navigator.mediaDevices) {
-            alert("您的瀏覽器不支援錄音，請使用 Chrome 並允許麥克風權限。");
+            showAlert("您的瀏覽器不支援錄音，請使用 Chrome 並允許麥克風權限。");
             return;
         }
         
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            state.mediaRecorder = new MediaRecorder(stream);
+            
+            let options = { mimeType: 'audio/webm' };
+            if (MediaRecorder.isTypeSupported('audio/webm')) {
+                options.mimeType = 'audio/webm';
+            } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+                options.mimeType = 'audio/mp4';
+            } else {
+                options = undefined;
+            }
+
+            state.mediaRecorder = new MediaRecorder(stream, options);
             state.audioChunks = [];
 
             state.mediaRecorder.ondataavailable = event => {
-                state.audioChunks.push(event.data);
+                if (event.data.size > 0) {
+                    state.audioChunks.push(event.data);
+                }
             };
 
             state.mediaRecorder.onstop = () => {
-                const audioBlob = new Blob(state.audioChunks, { type: 'audio/wav' });
+                const mimeType = state.mediaRecorder.mimeType || 'audio/webm';
+                const audioBlob = new Blob(state.audioChunks, { type: mimeType });
                 const audioUrl = URL.createObjectURL(audioBlob);
                 const currentWord = state.currentWords[state.currentIndex].word;
                 
                 state.userRecordings[currentWord] = audioUrl;
-                document.getElementById('playRecordBtn').disabled = false; // 啟用播放
+                document.getElementById('playRecordBtn').disabled = false; 
             };
 
             state.mediaRecorder.start();
@@ -1051,7 +1119,7 @@
             document.getElementById('recStatus').innerText = "錄音中...";
         } catch (err) {
             console.error("錄音錯誤:", err);
-            alert("無法存取麥克風");
+            showAlert("無法存取麥克風");
         }
     }
 
@@ -1069,11 +1137,10 @@
         const audioUrl = state.userRecordings[currentWord];
         if (audioUrl) {
             const audio = new Audio(audioUrl);
-            audio.play();
+            audio.play().catch(e => console.error("播放失敗:", e));
         }
     }
 
-    // --- 7. 合成音效 ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     
     function playSound(type) {
@@ -1104,7 +1171,7 @@
         osc.stop(audioCtx.currentTime + 0.3);
     }
 
-    // --- 8. 商城邏輯 ---
+    // --- 商城邏輯 ---
     const storeItems = {
         avatars: [
             { id: 'avatar_0', icon: '👦', price: 0 },
@@ -1159,20 +1226,20 @@
 
     function buyOrEquip(item, type) {
         if (state.unlockedItems.includes(item.id)) {
-            // 裝備
             if (type === 'avatar') state.currentAvatar = item.icon;
             if (type === 'theme') { state.currentTheme = item.id; applyTheme(item.id); }
             if (type === 'sfx') state.currentSfx = item.id;
         } else {
-            // 購買
             if (state.tokens >= item.price) {
-                if(confirm(`確定花費 ${item.price} 購買嗎？`)) {
+                showConfirm(`確定花費 ${item.price} 購買嗎？`, () => {
                     state.tokens -= item.price;
                     state.unlockedItems.push(item.id);
                     playSound('correct'); 
-                }
+                    saveData(); // 確保購買後儲存
+                    renderStore(); // 確保購買後更新介面
+                });
             } else {
-                alert("代幣不足！");
+                showAlert("代幣不足！");
                 return;
             }
         }
@@ -1194,7 +1261,6 @@
         }
     }
 
-    // 啟動
     init();
 
 </script>
